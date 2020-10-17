@@ -28,11 +28,12 @@ const invokeCommand = request => {
   config.conversation.textQuery = request;
   return new Promise((resolve, reject) => {
     assistant.start(config.conversation, conversation => {
-      conversation.on('ended', error => {
+      conversation.on('response', text => {
+        resolve(text)
+      }).on('ended', error => {
         if (error) {
           reject(error);
         }
-        resolve();
       }).on('error', error => {
         reject(error);
       });
@@ -59,8 +60,22 @@ const controlFan = fanOn => {
 
 const turnOnFan = () => controlFan(true);
 const turnOffFan = () => controlFan(false);
+const isFanOn = () => {
+  const request = 'is fan on';
+  return new Promise((resolve, reject) => {
+    const command = () => invokeCommand(request).then(responseText => {
+      const isOn = responseText.indexOf('on') !== -1;
+      resolve(isOn);
+    }).catch(reject);
+    if (isReady) {
+      command();
+    }
+    assistant.on('ready', command);
+  });
+};
 
 module.exports = {
   turnOffFan,
   turnOnFan,
+  isFanOn,
 };
