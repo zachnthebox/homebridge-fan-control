@@ -5,13 +5,13 @@ const fanOperations = require('./fan');
 
 app.use(express.json());
 
-app.get('/api/fan/living-room', (req, res) => {
-  fanOperations.isFanOn().then(isActive => {
-    res.json({
-      isActive,
-    });
-  });
-});
+// app.get('/api/fan/living-room', (req, res) => {
+//   fanOperations.isFanOn().then(isActive => {
+//     res.json({
+//       isActive,
+//     });
+//   });
+// });
 
 app.put('/api/fan/living-room', (req, res) => {
   console.dir(req.body);
